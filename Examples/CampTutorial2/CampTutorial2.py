@@ -160,7 +160,7 @@ class CampTutorial2Widget(ScriptedLoadableModuleWidget, VTKObservationMixin):
   def onOpacitySliderChanged(self, newValue):
     if slicer.mrmlScene.IsImporting():
       return
-    logging.info("Opacity slider set to {}".format(newValue))
+    logging.info(f"Opacity slider set to {newValue}")
     self.logic.setOpacity(newValue)
     if self.ui.autoUpdateCheckBox.checked == True:
       self.onApplyButton()
@@ -218,8 +218,8 @@ class CampTutorial2Widget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     # Select default input nodes if nothing is selected yet to save a few clicks for the user
 
     if not self._parameterNode.GetNodeReference(self.logic.INPUT_MARKUP):
-      firstMarkupNode = slicer.mrmlScene.GetFirstNodeByClass("vtkMRMLMarkupsFiducialNode")
-      if firstMarkupNode:
+      if firstMarkupNode := slicer.mrmlScene.GetFirstNodeByClass(
+          "vtkMRMLMarkupsFiducialNode"):
         self._parameterNode.SetNodeReferenceID(self.logic.INPUT_MARKUP, firstMarkupNode.GetID())
 
   def setParameterNode(self, inputParameterNode):
@@ -299,7 +299,7 @@ class CampTutorial2Widget(ScriptedLoadableModuleWidget, VTKObservationMixin):
       logging.info("Set input markup ID: None")
     else:
       self._parameterNode.SetNodeReferenceID(self.logic.INPUT_MARKUP, newNode.GetID())
-      logging.info("Set input markup ID: {}".format(newNode.GetID()))
+      logging.info(f"Set input markup ID: {newNode.GetID()}")
 
   def onApplyButton(self):
     """
@@ -309,7 +309,7 @@ class CampTutorial2Widget(ScriptedLoadableModuleWidget, VTKObservationMixin):
       self.logic.updateSphere(self.ui.inputMarkupSelector.currentNode(), self.ui.opacitySliderWidget.value)
 
     except Exception as e:
-      slicer.util.errorDisplay("Failed to compute results: "+str(e))
+      slicer.util.errorDisplay(f"Failed to compute results: {str(e)}")
       import traceback
       traceback.print_exc()
 
@@ -378,9 +378,9 @@ class CampTutorial2Logic(ScriptedLoadableModuleLogic, VTKObservationMixin):
       logging.info("Cannot export sphere model, not created yet")
       return
     exportPath = slicer.util.settingsValue(self.OUTPUT_PATH_SETTING, "")
-    fileName = sphereNode.GetName() + ".stl"
+    fileName = f"{sphereNode.GetName()}.stl"
     fileFullName = os.path.join(exportPath, fileName)
-    logging.info("Exporting sphere model to: {}".format(fileFullName))
+    logging.info(f"Exporting sphere model to: {fileFullName}")
     slicer.util.saveNode(sphereNode, fileFullName)
 
   def onSceneImportStart(self, event, caller):
